@@ -23,110 +23,110 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+	private AppBarConfiguration appBarConfiguration;
+	private ActivityMainBinding binding;
 
-    private MainViewModel viewModel;
+	private MainViewModel viewModel;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        System.out.println("OnCreate");
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		System.out.println("OnCreate");
 
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        viewModel.testInt += 1;
-        System.out.println("Viewmodel counter = "+viewModel.testInt);
-
-
-
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+		viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+		viewModel.testInt += 1;
+		System.out.println("Viewmodel counter = "+viewModel.testInt);
 
 
 
-        setSupportActionBar(binding.toolbar);
+		binding = ActivityMainBinding.inflate(getLayoutInflater());
+		setContentView(binding.getRoot());
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        binding.fab.setOnClickListener(view ->
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+		setSupportActionBar(binding.toolbar);
+
+		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+		appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+		NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+		binding.fab.setOnClickListener(view ->
+				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 				.setAction("Action", null).show());
-    }
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_main, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+		//noinspection SimplifiableIfStatement
+		if (id == R.id.action_settings) {
+			return true;
+		}
 
-        return super.onOptionsItemSelected(item);
-    }
+		return super.onOptionsItemSelected(item);
+	}
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-
-    //---------------------------------------------------------------------------------------------
+	@Override
+	public boolean onSupportNavigateUp() {
+		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+		return NavigationUI.navigateUp(navController, appBarConfiguration)
+				|| super.onSupportNavigateUp();
+	}
 
 
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        System.out.println("OnConfigurationChanged");
-    }
+	//---------------------------------------------------------------------------------------------
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("OnStart");
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("OnResume");
-    }
+	@Override
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		System.out.println("OnConfigurationChanged");
+	}
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        System.out.println("OnPause");
-    }
+	@Override
+	protected void onStart() {
+		super.onStart();
+		System.out.println("OnStart");
+	}
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("OnStop");
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		System.out.println("OnResume");
+	}
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        System.out.println("OnRestart");
-    }
+	@Override
+	protected void onPause() {
+		super.onPause();
+		System.out.println("OnPause");
+	}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        System.out.println("OnDestroy");
-    }
+	@Override
+	protected void onStop() {
+		super.onStop();
+		System.out.println("OnStop");
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		System.out.println("OnRestart");
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		System.out.println("OnDestroy");
+	}
 }
