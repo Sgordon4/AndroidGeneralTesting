@@ -1,52 +1,156 @@
 package com.example.generaltesting;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.FragmentNavigator;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Fade;
+import androidx.transition.Transition;
 
 import com.example.generaltesting.databinding.FragmentFirstBinding;
+import com.google.android.material.transition.MaterialContainerTransform;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FirstFragment extends Fragment {
 
 	private FragmentFirstBinding binding;
 
+	private RecyclerView recyclerView;
+	private UUIDAdapter adapter;
+
 	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		System.out.println("1 OnCreateView");
-		binding = FragmentFirstBinding.inflate(inflater, container, false);
-		return binding.getRoot();
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.fragment_first, container, false);
+	}
+
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+		postponeEnterTransition(); // Pause the transition
+
+		recyclerView = view.findViewById(R.id.recyclerview);
+		recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+		recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+			@Override
+			public boolean onPreDraw() {
+				recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+				startPostponedEnterTransition(); // Resume transition once layout is ready
+				return true;
+			}
+		});
+
+
+		List<String> uuidList = new ArrayList<>();
+		for (int i = 0; i < 50; i++) {
+			uuidList.add(UUID.randomUUID().toString());
+		}
+
+		adapter = new UUIDAdapter(uuidList, (imageView, transitionName) -> {
+			FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
+					.addSharedElement(imageView, transitionName)
+					.build();
+
+			Bundle args = new Bundle();
+			args.putString("transitionName", transitionName);
+
+			NavController navController = NavHostFragment.findNavController(this);
+			navController.navigate(R.id.SecondFragment, args, null, extras);
+		});
+
+		recyclerView.setAdapter(adapter);
+	}
+
+
+
+	/*
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		Transition transition = new MaterialContainerTransform();
+		transition.setDuration(600);
+
+		setSharedElementEnterTransition(transition);
+		setSharedElementReturnTransition(transition);
 	}
 
 
 	public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		Path dataDir = Paths.get(getContext().getFilesDir().getPath());
-		File file = new File(dataDir.toString(), "newFile.png");
-		File tempFile = new File(file.getParent(), "bbb.png");
+		RecyclerView recyclerView = binding.recyclerview;
+		recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-		try {
-			Files.deleteIfExists(tempFile.toPath());
-		} catch (IOException e) {
-			e.printStackTrace();
+		List<UUID> list = IntStream.range(0, 50).mapToObj(i -> UUID.randomUUID()).collect(Collectors.toList());
+		recyclerView.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+			@NonNull
+			@Override
+			public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+				LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+				View itemView = inflater.inflate(R.layout.rv_grid_item, parent, false);
+				return new ViewHolder(itemView);
+			}
+
+			@Override
+			public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+				View sharedItem = holder.itemView.findViewById(R.id.image);
+				ViewCompat.setTransitionName(holder.itemView, String.valueOf(position));
+
+				holder.itemView.setOnClickListener(view1 -> {
+					NavController navController = NavHostFragment.findNavController(FirstFragment.this);
+
+					FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
+							.addSharedElement(holder.itemView, holder.itemView.getTransitionName())
+							.build();
+
+					navController.navigate(R.id.action_FirstFragment_to_SecondFragment, null, null, extras);
+				});
+			}
+
+			@Override
+			public int getItemCount() {
+				return list.size();
+			}
+
+			class ViewHolder extends RecyclerView.ViewHolder {
+				public ViewHolder(@NonNull View itemView) {
+					super(itemView);
+				}
+			}
+		});
+		if(savedInstanceState != null) {
+			Parcelable rvState = savedInstanceState.getParcelable("rvState");
+
+			if(rvState != null) {
+				System.out.println("Parcel found: "+rvState);
+				recyclerView.getLayoutManager().onRestoreInstanceState(rvState);
+			}
 		}
-
-		ImageView imageView = view.findViewById(R.id.image);
-		//Glide.with(imageView).load(tempFile).into(imageView);
-		//Glide.with(imageView).load(Uri.fromFile(tempFile)).into(imageView);
-		//Glide.with(imageView).load(file).into(imageView);
 
 
 
@@ -55,10 +159,19 @@ public class FirstFragment extends Fragment {
 				.navigate(R.id.action_FirstFragment_to_SecondFragment));
 	}
 
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		Parcelable rvState = binding.recyclerview.getLayoutManager().onSaveInstanceState();
+		outState.putParcelable("rvState", rvState);
+
+		super.onSaveInstanceState(outState);
+	}
 
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
 		binding = null;
 	}
+
+	 */
 }

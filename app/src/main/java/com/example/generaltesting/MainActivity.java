@@ -13,6 +13,7 @@ import android.view.View;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -31,30 +32,25 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.out.println("OnCreate");
 
 		viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 		viewModel.testInt += 1;
-		System.out.println("Viewmodel counter = "+viewModel.testInt);
 
 
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
+		/*
+		NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.nav_host_fragment);
+		NavController navController = navHostFragment.getNavController();
+		NavigationUI.setupActionBarWithNavController(this, navController);
 
-
-		setSupportActionBar(binding.toolbar);
-
-		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-		appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-		NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-		binding.fab.setOnClickListener(view ->
-				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-				.setAction("Action", null).show());
+		 */
 	}
 
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -129,4 +125,5 @@ public class MainActivity extends AppCompatActivity {
 		super.onDestroy();
 		System.out.println("OnDestroy");
 	}
+	 */
 }
