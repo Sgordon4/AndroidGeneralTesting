@@ -44,15 +44,42 @@ public class FirstFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_first, container, false);
+		binding = FragmentFirstBinding.inflate(inflater, container, false);
+		return binding.getRoot();
 	}
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		postponeEnterTransition(); // Pause the transition
 
+		setEnterTransition(new MaterialContainerTransform());
+		setExitTransition(new MaterialContainerTransform());
+		setReenterTransition(new MaterialContainerTransform());
+		setSharedElementReturnTransition(new MaterialContainerTransform());
+		setReturnTransition(new MaterialContainerTransform());
+		setSharedElementEnterTransition(new MaterialContainerTransform());
+		setSharedElementReturnTransition(new MaterialContainerTransform());
+
+
+
+		ImageView imageView = binding.image;
+		imageView.setOnClickListener(v -> {
+			SecondFragment secondFragment = new SecondFragment();
+
+			Bundle args = new Bundle();
+			args.putString("transitionName", "image");
+			secondFragment.setArguments(args);
+
+			getParentFragmentManager().beginTransaction()
+					.setReorderingAllowed(true)
+					.addSharedElement(imageView, "image")
+					.replace(R.id.container, secondFragment)
+					.addToBackStack(null)
+					.commit();
+		});
+
+		/*
 		recyclerView = view.findViewById(R.id.recyclerview);
 		recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 		recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -71,6 +98,21 @@ public class FirstFragment extends Fragment {
 		}
 
 		adapter = new UUIDAdapter(uuidList, (imageView, transitionName) -> {
+
+			SecondFragment secondFragment = new SecondFragment();
+
+			Bundle args = new Bundle();
+			args.putString("transitionName", transitionName);
+			secondFragment.setArguments(args);
+
+			getParentFragmentManager().beginTransaction()
+					.setReorderingAllowed(true)
+					.addSharedElement(imageView, transitionName)
+					.replace(R.id.container, secondFragment)
+					.addToBackStack(null)
+					.commit();
+
+
 			FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
 					.addSharedElement(imageView, transitionName)
 					.build();
@@ -80,9 +122,12 @@ public class FirstFragment extends Fragment {
 
 			NavController navController = NavHostFragment.findNavController(this);
 			navController.navigate(R.id.SecondFragment, args, null, extras);
+
 		});
 
 		recyclerView.setAdapter(adapter);
+		 */
+
 	}
 
 

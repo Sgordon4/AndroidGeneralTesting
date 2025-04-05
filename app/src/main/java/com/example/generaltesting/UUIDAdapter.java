@@ -34,7 +34,7 @@ public class UUIDAdapter extends RecyclerView.Adapter<UUIDAdapter.ViewHolder> {
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-		String transitionName = "sharedImage" + position;
+		String transitionName = "image";
 		holder.imageView.setTransitionName(transitionName);
 
 		holder.imageView.setOnClickListener(v -> listener.onItemClick(holder.imageView, transitionName));

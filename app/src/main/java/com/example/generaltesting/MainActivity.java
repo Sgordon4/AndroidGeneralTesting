@@ -29,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
 	private MainViewModel viewModel;
 
+	int vpPos = 0;
+	public void setPos(int pos) {
+		System.out.println("Setting position to "+pos);
+		vpPos = pos;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
+
+
+		/*
+		// Add FragmentA to the FragmentContainerView
+		FragmentA fragmentA = new FragmentA();
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragmentContainer, fragmentA)
+				.commit();
+		 */
 
 		/*
 		NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()

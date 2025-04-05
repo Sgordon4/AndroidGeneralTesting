@@ -33,6 +33,13 @@ public class SecondFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		postponeEnterTransition();
+
+		setEnterTransition(new MaterialContainerTransform());
+		setExitTransition(new MaterialContainerTransform());
+		setReenterTransition(new MaterialContainerTransform());
+		setSharedElementReturnTransition(new MaterialContainerTransform());
+		setReturnTransition(new MaterialContainerTransform());
 		setSharedElementEnterTransition(new MaterialContainerTransform());
 		setSharedElementReturnTransition(new MaterialContainerTransform());
 	}
@@ -47,8 +54,10 @@ public class SecondFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 
 		ImageView imageView = view.findViewById(R.id.image);
-		String transitionName = getArguments() != null ? getArguments().getString("transitionName") : "";
-		imageView.setTransitionName(transitionName);
+		//String transitionName = getArguments() != null ? getArguments().getString("transitionName") : "";
+		//imageView.setTransitionName(transitionName);
+
+		startPostponedEnterTransition();
 	}
 
 
